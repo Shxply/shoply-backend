@@ -1,4 +1,4 @@
-package com.shoply.shoply_backend.services;
+package com.shoply.shoply_backend.services.AuthServices;
 
 import com.shoply.shoply_backend.models.User;
 import com.shoply.shoply_backend.repositories.UserRepository;

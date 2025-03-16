@@ -1,7 +1,7 @@
 package com.shoply.shoply_backend.controllers;
 
-import com.shoply.shoply_backend.services.ShoplyAuthService;
-import com.shoply.shoply_backend.services.GoogleAuthService;
+import com.shoply.shoply_backend.services.AuthServices.ShoplyAuthService;
+import com.shoply.shoply_backend.services.AuthServices.GoogleAuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

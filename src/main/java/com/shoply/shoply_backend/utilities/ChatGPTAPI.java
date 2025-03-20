@@ -1,5 +1,6 @@
 package com.shoply.shoply_backend.utilities;
 
+import com.shoply.shoply_backend.models.Product;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -19,12 +20,21 @@ public class ChatGPTAPI {
         this.apiKey = System.getenv("CHAT_GPT_API_KEY");
     }
 
-    public String getChatGPTResponse(String prompt) {
-        return makeChatGPTRequest("SYSTEM_PROMPT_PLACEHOLDER", prompt);
+    public String compareProducts(Product product1, Product product2) {
+        String systemPrompt = "You are a helpful assistant that compares products based on their details and provides insights.";
+        String userPrompt = generateComparisonPrompt(product1, product2);
+        return makeChatGPTRequest(systemPrompt, userPrompt);
     }
 
-    public String getChatGPTCustomResponse(String customPrompt) {
-        return makeChatGPTRequest("CUSTOM_PROMPT_PLACEHOLDER", customPrompt);
+    private String generateComparisonPrompt(Product product1, Product product2) {
+        return String.format(
+                "Compare the following two products based on their brand, category, and other details:\n" +
+                        "Product 1: \nName: %s\nBrand: %s\nCategory: %s\nBarcode: %s\n" +
+                        "Product 2: \nName: %s\nBrand: %s\nCategory: %s\nBarcode: %s\n" +
+                        "Provide a detailed comparison, highlighting similarities and differences.",
+                product1.getName(), product1.getBrand(), product1.getCategory(), product1.getBarcode(),
+                product2.getName(), product2.getBrand(), product2.getCategory(), product2.getBarcode()
+        );
     }
 
     private String makeChatGPTRequest(String systemPrompt, String userPrompt) {
@@ -60,4 +70,3 @@ public class ChatGPTAPI {
         return message != null ? ((String) message.get("content")).trim() : "Error: Empty response.";
     }
 }
-

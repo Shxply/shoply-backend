@@ -9,42 +9,47 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.NoSuchElementException;
 
 @Service
 public class ShoplyAuthService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public ShoplyAuthService(UserRepository userRepository, JwtUtil jwtUtil) {
+    public ShoplyAuthService(UserRepository userRepository, JwtUtil jwtUtil, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    public void registerUser(String name, String email, String password) {
-        Optional<User> existingUser = userRepository.findByEmail(email);
-        if (existingUser.isPresent()) {
-            throw new RuntimeException("Email already exists");
+    public String registerUser(String name, String email, String password) {
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new IllegalArgumentException("Email already exists");
         }
+
         Set<String> defaultRoles = new HashSet<>();
         defaultRoles.add("USER");
+
         String hashedPassword = passwordEncoder.encode(password);
         User newUser = User.UserFactory.createLocalUser(name, email, hashedPassword, defaultRoles);
         userRepository.save(newUser);
+
+        return jwtUtil.generateToken(newUser.getUserId(), newUser.getRoles());
     }
 
     public String authenticateUser(String email, String password) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        if (!optionalUser.isPresent()) {
-            throw new RuntimeException("Invalid credentials");
-        }
-        User user = optionalUser.get();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("Invalid email or password"));
+
         if (!passwordEncoder.matches(password, user.getPasswordHash())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new IllegalArgumentException("Invalid email or password");
         }
+
         return jwtUtil.generateToken(user.getUserId(), user.getRoles());
     }
 }
+
 
 
 

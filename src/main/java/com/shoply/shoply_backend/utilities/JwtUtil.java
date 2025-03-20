@@ -18,12 +18,21 @@ public class JwtUtil {
 
     public JwtUtil() {
         String secretKey = System.getenv("JWT_SECRET");
+        if (secretKey == null || secretKey.isEmpty()) {
+            throw new IllegalStateException("JWT_SECRET environment variable is not set or is empty.");
+        }
         byte[] decodedKey = Base64.getDecoder().decode(secretKey);
         this.SECRET_KEY = Keys.hmacShaKeyFor(decodedKey);
     }
 
     public String generateToken(String userId, Set<String> roles) {
-        return Jwts.builder().setSubject(userId).claim("roles", roles).setIssuedAt(new Date()).setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)).signWith(SECRET_KEY).compact();
+        return Jwts.builder()
+                .setSubject(userId)
+                .claim("roles", roles)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
+                .signWith(SECRET_KEY)
+                .compact();
     }
 
     public String extractUserId(String token) {
@@ -34,34 +43,39 @@ public class JwtUtil {
     public Set<String> extractRoles(String token) {
         Claims claims = extractAllClaims(token);
         List<String> rolesList = claims.get("roles", List.class);
-        return new HashSet<>(rolesList);
+        return rolesList != null ? new HashSet<>(rolesList) : new HashSet<>();
     }
 
     public Date extractExpiration(String token) {
-        Claims claims = extractAllClaims(token);
-        return claims.getExpiration();
+        return extractAllClaims(token).getExpiration();
     }
 
     public Date extractIssuedAt(String token) {
-        Claims claims = extractAllClaims(token);
-        return claims.getIssuedAt();
+        return extractAllClaims(token).getIssuedAt();
     }
 
     public Object extractClaim(String token, String claimKey) {
-        Claims claims = extractAllClaims(token);
-        return claims.get(claimKey);
+        return extractAllClaims(token).get(claimKey);
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();
+        return Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     public boolean validateToken(String token, String userId) {
-        String extractedUserId = extractUserId(token);
-        return extractedUserId.equals(userId);
+        try {
+            String extractedUserId = extractUserId(token);
+            return extractedUserId.equals(userId) && !isTokenExpired(token);
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
     }
 }
-
-
-
-

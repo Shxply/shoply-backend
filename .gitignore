@@ -1,9 +1,11 @@
-HELP.md
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+### Ignore compiled Java files and build artifacts ###
+/target/
+/build/
 
-### STS ###
+### Maven Wrapper ###
+!.mvn/wrapper/maven-wrapper.jar
+
+### Spring Tool Suite (STS) ###
 .apt_generated
 .classpath
 .factorypath
@@ -13,7 +15,7 @@ HELP.md
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -24,9 +26,8 @@ HELP.md
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
 ### VS Code ###
 .vscode/
+
+/target/

@@ -31,11 +31,6 @@ public class BarcodeScanController {
         return barcodeScanService.getScansByUserId(userId);
     }
 
-    @GetMapping("/barcode/{barcode}")
-    public List<BarcodeScan> getScansByBarcode(@PathVariable String barcode) {
-        return barcodeScanService.getScansByBarcode(barcode);
-    }
-
     @PostMapping
     public BarcodeScan createScan(@RequestBody BarcodeScan barcodeScan) {
         return barcodeScanService.createScan(barcodeScan);

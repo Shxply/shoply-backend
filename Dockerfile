@@ -1,5 +1,5 @@
 # First stage: Build the JAR file
-FROM maven:3.8.6-openjdk-17 AS builder
+FROM maven:3.9-eclipse-temurin-17 AS builder
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
@@ -15,4 +15,5 @@ EXPOSE 8080
 
 # Run the JAR file (using Heroku's PORT environment variable)
 ENTRYPOINT ["java", "-Dserver.port=${PORT:-8080}", "-jar", "/app/app.jar"]
+
 

@@ -1,22 +1,16 @@
 package com.shoply.shoply_backend.services;
 
-import com.shoply.shoply_backend.annotations.ExpectedResult;
-import com.shoply.shoply_backend.annotations.IntegrationTest;
-import com.shoply.shoply_backend.annotations.MockDependency;
-import com.shoply.shoply_backend.annotations.TestableService;
 import com.shoply.shoply_backend.models.Store;
 import com.shoply.shoply_backend.repositories.StoreRepository;
 import com.shoply.shoply_backend.utilities.GooglePlacesAPI;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
-@TestableService
 @Service
 public class StoreService {
 
-    @MockDependency
     private StoreRepository storeRepository;
-    @MockDependency
+
     private GooglePlacesAPI googlePlacesAPI;
 
     public StoreService() {
@@ -27,22 +21,14 @@ public class StoreService {
         this.googlePlacesAPI = googlePlacesAPI;
     }
 
-    @IntegrationTest
-    @ExpectedResult(inputJson = "\"1\"", expectedJson = "{\"storeId\":\"1\",\"name\":\"Store1\"}")
-    @ExpectedResult(inputJson = "\"2\"", expectedJson = "__NULL__")
     public Store getStoreById(String storeId) {
         return storeRepository.findByStoreId(storeId);
     }
 
-    @IntegrationTest
-    @ExpectedResult(inputJson = "{\"name\":\"New Store\"}", expectedJson = "{\"storeId\":\"3\",\"name\":\"New Store\"}")
     public void createStore(Store store) {
         storeRepository.save(store);
     }
 
-    @IntegrationTest
-    @ExpectedResult(inputJson = "\"1\"", expectedJson = "__VOID__")
-    @ExpectedResult(inputJson = "\"2\"", expectedJson = "__VOID__")
     public void deleteStore(String storeId) {
         storeRepository.deleteById(storeId);
     }

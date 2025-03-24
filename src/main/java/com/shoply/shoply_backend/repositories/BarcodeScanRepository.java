@@ -9,6 +9,5 @@ import java.util.List;
 @Repository
 public interface BarcodeScanRepository extends MongoRepository<BarcodeScan, String> {
     List<BarcodeScan> findByUserId(String userId);
-    List<BarcodeScan> findByBarcode(String barcode);
 }
 

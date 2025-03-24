@@ -15,9 +15,6 @@ public interface StoreRepository extends MongoRepository<Store, String> {
 
     Store findByStoreId(String id);
 
-    @Query("{ 'location': { $nearSphere: { $geometry: { type: 'Point', coordinates: [ :#{#lng}, :#{#lat} ] }, $maxDistance: :#{#distance} } } }")
-    List<Store> findStoresNear(@Param("lng") double longitude, @Param("lat") double latitude, @Param("distance") double maxDistance);
-
 }
 
 

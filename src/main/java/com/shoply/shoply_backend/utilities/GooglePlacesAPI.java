@@ -25,8 +25,13 @@ public class GooglePlacesAPI {
         this.apiKey = System.getenv("GOOGLE_PLACES_API_KEY");
     }
 
-    public List<Store> searchAndSavePlaces(String query) {
-        String url = UriComponentsBuilder.fromUriString("https://maps.googleapis.com/maps/api/place/textsearch/json").queryParam("query", query).queryParam("key", apiKey).toUriString();
+    public List<Store> searchAndSavePlaces(String location, double radius) {
+        // Build the URL with latitude, longitude, and radius
+        String url = UriComponentsBuilder.fromUriString("https://maps.googleapis.com/maps/api/place/nearbysearch/json")
+                .queryParam("location", location) // e.g., "40.7128,-74.0060"
+                .queryParam("radius", radius) // e.g., 1000 meters
+                .queryParam("key", apiKey)
+                .toUriString();
 
         String jsonResponse = restTemplate.getForObject(url, String.class);
         List<Store> stores = new ArrayList<>();
@@ -43,10 +48,11 @@ public class GooglePlacesAPI {
                 Store store = Store.StoreFactory.create(name, latitude, longitude);
                 stores.add(store);
             }
-            return storeRepository.saveAll(stores);
+            return storeRepository.saveAll(stores); // Save all stores at once
         } catch (Exception e) {
             e.printStackTrace();
         }
         return stores;
     }
 }
+

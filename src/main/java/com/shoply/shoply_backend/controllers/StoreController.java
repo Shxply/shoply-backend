@@ -17,18 +17,18 @@ public class StoreController {
     }
 
     @GetMapping
-    public List<Store> getAllStores() {
-        return storeService.getAllStores();
-    }
-
-    @GetMapping("/{id}")
-    public Optional<Store> getStoreById(@PathVariable String id) {
-        return storeService.getStoreById(id);
+    public List<Store> getStoresNearUser200M(@RequestParam double latitude, @RequestParam double longitude) {
+        return storeService.getStoresNearUser200M(latitude, longitude);
     }
 
     @PostMapping
-    public Store createStore(@RequestBody Store store) {
-        return storeService.createStore(store);
+    public void getStoresNearUser25KM(@RequestParam double latitude, @RequestParam double longitude) {
+        storeService.getStoresNearUser25KM(latitude, longitude);
+    }
+
+    @GetMapping("/{id}")
+    public Store getStoreById(@PathVariable String id) {
+        return storeService.getStoreById(id);
     }
 
     @DeleteMapping("/{id}")

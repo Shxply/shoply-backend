@@ -2,8 +2,8 @@ name: Deploy to Heroku
 
 on:
   push:
-#    branches:
-#      - main  # Deploy only when code is pushed to main
+    branches:
+      - main
 
 jobs:
   deploy:

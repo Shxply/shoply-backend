@@ -36,7 +36,7 @@ public class StoreService {
     public void getStoresNearUser25KM (double latitude, double longitude) {
         StringBuilder sb = new StringBuilder();
         sb.append(latitude).append(", ").append(longitude);
-        List<Store> stores = googlePlacesAPI.searchAndSavePlaces(sb.toString(), 25000);
+        List<Store> stores = googlePlacesAPI.fetchNearbyStores(sb.toString(), 25000);
         for(Store store : stores) {
             Store existingStore = storeRepository.findByName(store.getName());
             if(existingStore == null) {

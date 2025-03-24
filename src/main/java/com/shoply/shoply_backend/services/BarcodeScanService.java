@@ -30,10 +30,6 @@ public class BarcodeScanService {
         return barcodeScanRepository.findByUserId(userId);
     }
 
-    public List<BarcodeScan> getScansByBarcode(String barcode) {
-        return barcodeScanRepository.findByBarcode(barcode);
-    }
-
     public BarcodeScan createScan(BarcodeScan barcodeScan) {
         return barcodeScanRepository.save(barcodeScan);
     }

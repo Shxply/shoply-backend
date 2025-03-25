@@ -7,7 +7,6 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.shoply.shoply_backend.models.User;
 import com.shoply.shoply_backend.repositories.UserRepository;
 import com.shoply.shoply_backend.utilities.JwtUtil;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -18,14 +17,9 @@ import java.util.Set;
 @Service
 public class GoogleAuthService {
 
-    @Value("${GOOGLE_OAUTH_CLIENT_ID}")
-    private String clientId;
-
-    @Value("${GOOGLE_OAUTH_CLIENT_SECRET}")
-    private String clientSecret;
-
-    @Value("${GOOGLE_OAUTH_REDIRECT_URI}")
-    private String redirectUri;
+    private final String clientId = System.getenv("GOOGLE_OAUTH_CLIENT_ID");
+    private final String clientSecret = System.getenv("GOOGLE_OAUTH_CLIENT_SECRET");
+    private final String redirectUri = System.getenv("GOOGLE_OAUTH_REDIRECT_URI");
 
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
@@ -100,5 +94,3 @@ public class GoogleAuthService {
         }
     }
 }
-
-

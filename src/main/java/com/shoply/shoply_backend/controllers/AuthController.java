@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -32,15 +34,14 @@ public class AuthController {
         return ResponseEntity.ok(token);
     }
 
-    @GetMapping("/google/login")
-    public void redirectToGoogle(HttpServletResponse response) throws IOException {
-        response.sendRedirect(googleAuthService.buildGoogleOAuthUrl());
-    }
-
-    @GetMapping("/google/callback")
-    public void handleGoogleCallback(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
-        String redirectUrl = googleAuthService.handleGoogleCallback(code);
-        response.sendRedirect(redirectUrl);
+    @PostMapping("/google/mobile")
+    public ResponseEntity<?> loginViaMobile(@RequestBody Map<String, String> body) {
+        String idToken = body.get("idToken");
+        if (idToken == null) {
+            return ResponseEntity.badRequest().body("Missing idToken");
+        }
+        String jwt = googleAuthService.authenticateMobileGoogleUser(idToken);
+        return ResponseEntity.ok(Collections.singletonMap("token", jwt));
     }
 
 }

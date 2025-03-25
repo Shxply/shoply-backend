@@ -65,7 +65,8 @@ public class GoogleAuthService {
             String jwt = authenticateGoogleUser(idTokenString);
             Logger.info("Generated internal JWT: {}", jwt);
 
-            return "shoply://auth?token=" + jwt;
+            return "redirect:" + "shoply://auth?token=" + jwt;
+
 
         } catch (IOException e) {
             Logger.error(e, "Failed to handle Google callback");

@@ -19,7 +19,7 @@ import java.util.Set;
 public class GoogleAuthService {
 
     private final String clientId = System.getenv("GOOGLE_OAUTH_CLIENT_ID");
-    private final String clientSecret = System.getenv("GOOGLE_OAUTH_CLIENT_SECRET");
+    private final String clientSecret = System.getenv("GOOGLE_CLIENT_SECRET");
     private final String redirectUri = System.getenv("GOOGLE_OAUTH_REDIRECT_URI");
 
     private final UserRepository userRepository;

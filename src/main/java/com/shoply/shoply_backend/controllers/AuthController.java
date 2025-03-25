@@ -38,9 +38,10 @@ public class AuthController {
     }
 
     @GetMapping("/google/callback")
-    public void handleGoogleCallback(@RequestParam(required = false) String code, HttpServletResponse response) throws IOException {
+    public void handleGoogleCallback(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
         String redirectUrl = googleAuthService.handleGoogleCallback(code);
         response.sendRedirect(redirectUrl);
     }
+
 }
 

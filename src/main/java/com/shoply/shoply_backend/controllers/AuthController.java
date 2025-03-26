@@ -3,12 +3,10 @@ package com.shoply.shoply_backend.controllers;
 import com.shoply.shoply_backend.services.AuthServices.ShoplyAuthService;
 import com.shoply.shoply_backend.services.AuthServices.GoogleAuthService;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.net.URI;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -34,14 +32,10 @@ public class AuthController {
         return ResponseEntity.ok(token);
     }
 
-    @GetMapping("/auth/google/login")
-    public ResponseEntity<Void> googleLogin(@RequestParam String redirectUri) {
-        String oauthUrl = googleAuthService.buildGoogleOAuthUrl(redirectUri);
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .location(URI.create(oauthUrl))
-                .build();
+    @GetMapping("/google/login")
+    public void redirectToGoogle(HttpServletResponse response) throws IOException {
+        response.sendRedirect(googleAuthService.buildGoogleOAuthUrl());
     }
-
 
     @GetMapping("/google/callback")
     public void handleGoogleCallback(@RequestParam("code") String code, HttpServletResponse response) throws IOException {

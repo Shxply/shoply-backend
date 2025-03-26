@@ -33,6 +33,7 @@ public class ShoplyAuthService {
 
         String hashedPassword = passwordEncoder.encode(password);
         User newUser = User.UserFactory.createLocalUser(name, email, hashedPassword, defaultRoles);
+        newUser.setProfilePicture("profile-picture/default-profile-picture.png");
         userRepository.save(newUser);
 
         return jwtUtil.generateToken(newUser.getUserId(), newUser.getRoles());

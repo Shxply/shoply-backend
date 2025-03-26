@@ -33,10 +33,10 @@ public class GoogleAuthService {
         this.jwtUtil = jwtUtil;
     }
 
-    public String buildGoogleOAuthUrl() {
+    public String buildGoogleOAuthUrl(String clientRedirectUri) {
         String url = "https://accounts.google.com/o/oauth2/v2/auth"
                 + "?client_id=" + clientId
-                + "&redirect_uri=" + redirectUri
+                + "&redirect_uri=" + clientRedirectUri
                 + "&response_type=code"
                 + "&scope=openid profile email"
                 + "&prompt=select_account"

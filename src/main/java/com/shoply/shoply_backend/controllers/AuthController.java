@@ -42,6 +42,5 @@ public class AuthController {
         String redirectUrl = googleAuthService.handleGoogleCallback(code);
         response.sendRedirect(redirectUrl);
     }
-
 }
 

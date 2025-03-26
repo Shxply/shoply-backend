@@ -32,6 +32,7 @@ public class AuthController {
         return ResponseEntity.ok(token);
     }
 
+    // The following endpoints do not work
     @GetMapping("/google/login")
     public void redirectToGoogle(HttpServletResponse response) throws IOException {
         response.sendRedirect(googleAuthService.buildGoogleOAuthUrl());

@@ -23,6 +23,7 @@ public class ShoplyAuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // Register User
     public String registerUser(String name, String email, String password) {
         if (userRepository.findByEmail(email).isPresent()) {
             throw new IllegalArgumentException("Email already exists");

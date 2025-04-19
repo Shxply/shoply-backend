@@ -15,17 +15,14 @@ public class StoreService {
 
     private StoreRepository storeRepository;
 
-    private GooglePlacesAPI googlePlacesAPI;
-
     private MongoTemplate mongoTemplate;
 
 
     public StoreService() {
     }
 
-    public StoreService(StoreRepository storeRepository, GooglePlacesAPI googlePlacesAPI, MongoTemplate mongoTemplate) {
+    public StoreService(StoreRepository storeRepository, MongoTemplate mongoTemplate) {
         this.storeRepository = storeRepository;
-        this.googlePlacesAPI = googlePlacesAPI;
         this.mongoTemplate = mongoTemplate;
     }
 
@@ -45,7 +42,7 @@ public class StoreService {
     public void getStoresNearUser25KM (double latitude, double longitude) {
         StringBuilder sb = new StringBuilder();
         sb.append(latitude).append(", ").append(longitude);
-        List<Store> stores = googlePlacesAPI.fetchNearbyStores(sb.toString(), 25000);
+        List<Store> stores = GooglePlacesAPI.fetchNearbyStores(sb.toString(), 25000);
         for(Store store : stores) {
             Store existingStore = storeRepository.findByName(store.getName());
             if(existingStore == null) {

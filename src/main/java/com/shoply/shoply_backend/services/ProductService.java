@@ -2,9 +2,11 @@ package com.shoply.shoply_backend.services;
 
 import com.shoply.shoply_backend.models.Product;
 import com.shoply.shoply_backend.repositories.ProductRepository;
+import com.shoply.shoply_backend.utilities.OpenFoodFactsAPI;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class ProductService {
@@ -28,6 +30,23 @@ public class ProductService {
 
     public Optional<Product> getProductByBarcode(String barcode) {
         return productRepository.findByBarcode(barcode);
+    }
+
+    public CompletableFuture<Optional<Product>> createProductByBarcode(String barcode) {
+        Optional<Product> existing = productRepository.findByBarcode(barcode);
+        if (existing.isPresent()) {
+            return CompletableFuture.completedFuture(existing);
+        }
+
+        return OpenFoodFactsAPI.getProductByBarcodeMappedAsync(barcode)
+                .thenApply(product -> {
+                    if (product != null) {
+                        productRepository.save(product);
+                        return Optional.of(product);
+                    } else {
+                        return Optional.empty();
+                    }
+                });
     }
 
     public Product createProduct(Product product) {

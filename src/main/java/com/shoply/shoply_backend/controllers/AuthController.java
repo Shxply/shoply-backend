@@ -1,8 +1,8 @@
 package com.shoply.shoply_backend.controllers;
 
+import com.shoply.shoply_backend.dto.AuthRequest;
 import com.shoply.shoply_backend.services.AuthServices.ShoplyAuthService;
 import com.shoply.shoply_backend.services.AuthServices.GoogleAuthService;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,27 +21,16 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestParam String name, @RequestParam String email, @RequestParam String password) {
-        shoplyAuthService.registerUser(name, email, password);
+    public ResponseEntity<String> register(@RequestBody AuthRequest request) {
+        shoplyAuthService.registerUser(request.name, request.email, request.password);
         return ResponseEntity.ok("User registered successfully");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String email, @RequestParam String password) {
-        String token = shoplyAuthService.authenticateUser(email, password);
+    public ResponseEntity<String> login(@RequestBody AuthRequest request) {
+        String token = shoplyAuthService.authenticateUser(request.email, request.password);
         return ResponseEntity.ok(token);
     }
 
-    // The following endpoints do not work
-    @GetMapping("/google/login")
-    public void redirectToGoogle(HttpServletResponse response) throws IOException {
-        response.sendRedirect(googleAuthService.buildGoogleOAuthUrl());
-    }
-
-    @GetMapping("/google/callback")
-    public void handleGoogleCallback(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
-        String redirectUrl = googleAuthService.handleGoogleCallback(code);
-        response.sendRedirect(redirectUrl);
-    }
 }
 

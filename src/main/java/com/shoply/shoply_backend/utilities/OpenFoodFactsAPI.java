@@ -43,14 +43,14 @@ public class OpenFoodFactsAPI {
             }
 
             logger.info("Product data fetched successfully. Starting JSON parsing...");
-            return parseProductFromJson(response.body());
+            return parseProductFromJson(response.body(), barcode);  // Pass the original barcode
         } catch (Exception e) {
             logger.error("Exception occurred during product fetch:", e);
             return null;
         }
     }
 
-    private static Product parseProductFromJson(String json) {
+    private static Product parseProductFromJson(String json, String originalBarcode) {
         try {
             JsonNode root = mapper.readTree(json);
             JsonNode productNode = root.get("product");
@@ -62,7 +62,6 @@ public class OpenFoodFactsAPI {
 
             logger.debug("Extracting product fields from JSON...");
 
-            String barcode = root.path("code").asText(null);
             String name = productNode.path("product_name").asText(null);
             String brand = productNode.path("brands").asText(null);
             String brandOwner = productNode.path("brand_owner").asText(null);
@@ -85,8 +84,10 @@ public class OpenFoodFactsAPI {
                     : null;
 
             logger.info("Product parsed successfully: {}", name);
+
+            // Use the original barcode from frontend instead of what's in the JSON
             return Product.ProductFactory.create(
-                    barcode, name, brand, brandOwner, category,
+                    originalBarcode, name, brand, brandOwner, category,
                     ingredients, nutriScore, energyKcal, salt, sugar,
                     imageUrl, imageFrontUrl, imageIngredientsUrl, imageNutritionUrl,
                     ingredientTags
@@ -97,24 +98,4 @@ public class OpenFoodFactsAPI {
             return null;
         }
     }
-
-    public static void main(String[] args) {
-        String testBarcode = "855469006229";
-
-        Product product = getProductByBarcodeMapped(testBarcode);
-
-        if (product != null) {
-            System.out.println("✅ Product fetched successfully:");
-            System.out.println("Name: " + product.getName());
-            System.out.println("Brand: " + product.getBrand());
-            System.out.println("Calories: " + product.getEnergyKcal());
-            System.out.println("Sugar: " + product.getSugar());
-            System.out.println("Salt: " + product.getSalt());
-            System.out.println("NutriScore: " + product.getNutriScore());
-            System.out.println("Ingredients: " + product.getIngredients());
-        } else {
-            System.out.println("❌ Product not found or failed to parse.");
-        }
-    }
 }
-

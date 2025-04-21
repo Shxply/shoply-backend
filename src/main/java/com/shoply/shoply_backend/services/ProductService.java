@@ -2,11 +2,11 @@ package com.shoply.shoply_backend.services;
 
 import com.shoply.shoply_backend.models.Product;
 import com.shoply.shoply_backend.repositories.ProductRepository;
+import com.shoply.shoply_backend.utilities.ChatGPTAPI;
 import com.shoply.shoply_backend.utilities.OpenFoodFactsAPI;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 public class ProductService {
@@ -45,6 +45,9 @@ public class ProductService {
         }
     }
 
+    public String compareProductWithAI(Product product1, Product product2) {
+        return ChatGPTAPI.compareProducts(product1, product2);
+    }
 
     public Product createProduct(Product product) {
         return productRepository.save(product);

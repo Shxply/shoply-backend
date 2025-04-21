@@ -13,7 +13,6 @@ public class ChatGPTAPI {
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
 
     private ChatGPTAPI() {
-        // Prevent instantiation
     }
 
     public static String compareProducts(Product product1, Product product2) {

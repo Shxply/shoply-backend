@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/products")
@@ -38,6 +37,16 @@ public class ProductController {
         return productService.createProductByBarcode(barcode)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/compare/ai")
+    public ResponseEntity<String> compareProductsWithAI(@RequestBody List<Product> products) {
+
+        Product product1 = products.get(0);
+        Product product2 = products.get(1);
+
+        String result = productService.compareProductWithAI(product1, product2);
+        return ResponseEntity.ok(result);
     }
 
 

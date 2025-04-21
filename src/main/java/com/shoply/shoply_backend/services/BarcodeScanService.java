@@ -11,9 +11,6 @@ public class BarcodeScanService {
 
     private BarcodeScanRepository barcodeScanRepository;
 
-    public BarcodeScanService() {
-    }
-
     public BarcodeScanService(BarcodeScanRepository barcodeScanRepository) {
         this.barcodeScanRepository = barcodeScanRepository;
     }

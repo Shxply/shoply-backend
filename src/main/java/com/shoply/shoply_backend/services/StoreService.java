@@ -17,15 +17,10 @@ public class StoreService {
 
     private MongoTemplate mongoTemplate;
 
-
-    public StoreService() {
-    }
-
     public StoreService(StoreRepository storeRepository, MongoTemplate mongoTemplate) {
         this.storeRepository = storeRepository;
         this.mongoTemplate = mongoTemplate;
     }
-
 
     public Store getStoreById(String storeId) {
         return storeRepository.findByStoreId(storeId);

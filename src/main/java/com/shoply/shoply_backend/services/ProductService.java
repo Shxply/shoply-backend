@@ -13,9 +13,6 @@ public class ProductService {
 
     private ProductRepository productRepository;
 
-    public ProductService() {
-    }
-
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }

@@ -10,9 +10,6 @@ public class ShoppingListService {
 
     private ShoppingListRepository shoppingListRepository;
 
-    public ShoppingListService() {
-    }
-
     public ShoppingListService(ShoppingListRepository shoppingListRepository) {
         this.shoppingListRepository = shoppingListRepository;
     }

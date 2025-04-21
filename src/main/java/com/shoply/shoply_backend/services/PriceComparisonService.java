@@ -11,9 +11,6 @@ public class PriceComparisonService {
 
     private PriceComparisonRepository priceComparisonRepository;
 
-    public PriceComparisonService() {
-    }
-
     public PriceComparisonService(PriceComparisonRepository priceComparisonRepository) {
         this.priceComparisonRepository = priceComparisonRepository;
     }

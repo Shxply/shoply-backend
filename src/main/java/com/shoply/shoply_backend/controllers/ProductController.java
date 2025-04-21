@@ -34,14 +34,12 @@ public class ProductController {
     }
 
     @GetMapping("/compare/{barcode}")
-    public CompletableFuture<ResponseEntity<Product>> compareProductByBarcode(@PathVariable String barcode) {
+    public ResponseEntity<Product> compareProductByBarcode(@PathVariable String barcode) {
         return productService.createProductByBarcode(barcode)
-                .thenApply(optionalProduct ->
-                        optionalProduct
-                                .map(ResponseEntity::ok)
-                                .orElseGet(() -> ResponseEntity.notFound().build())
-                );
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
 
     @PostMapping
     public Product createProduct(@RequestBody Product product) {

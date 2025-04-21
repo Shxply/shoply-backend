@@ -9,7 +9,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -19,23 +18,27 @@ public class OpenFoodFactsAPI {
     private static final HttpClient httpClient = HttpClient.newHttpClient();
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    public static CompletableFuture<Product> getProductByBarcodeMappedAsync(String barcode) {
-        String url = BASE_URL + barcode + ".json";
+    public static Product getProductByBarcodeMapped(String barcode) {
+        try {
+            String url = BASE_URL + barcode + ".json";
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .header("Accept", "application/json")
-                .GET()
-                .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-        return httpClient
-                .sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenApply(HttpResponse::body)
-                .thenApply(OpenFoodFactsAPI::parseProductFromJson)
-                .exceptionally(e -> {
-                    e.printStackTrace();
-                    return null;
-                });
+            if (response.statusCode() != 200) {
+                System.err.println("❌ Failed to fetch product. HTTP Status: " + response.statusCode());
+                return null;
+            }
+
+            return parseProductFromJson(response.body());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private static Product parseProductFromJson(String json) {
@@ -80,6 +83,22 @@ public class OpenFoodFactsAPI {
         }
     }
 
+    public static void main(String[] args) {
+        String testBarcode = "855469006229";
+
+        Product product = getProductByBarcodeMapped(testBarcode);
+
+        if (product != null) {
+            System.out.println("✅ Product fetched successfully:");
+            System.out.println("Name: " + product.getName());
+            System.out.println("Brand: " + product.getBrand());
+            System.out.println("Calories: " + product.getEnergyKcal());
+            System.out.println("Sugar: " + product.getSugar());
+            System.out.println("Salt: " + product.getSalt());
+            System.out.println("NutriScore: " + product.getNutriScore());
+            System.out.println("Ingredients: " + product.getIngredients());
+        } else {
+            System.out.println("❌ Product not found or failed to parse.");
+        }
+    }
 }
-
-

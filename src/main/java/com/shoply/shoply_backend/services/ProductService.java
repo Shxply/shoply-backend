@@ -32,22 +32,22 @@ public class ProductService {
         return productRepository.findByBarcode(barcode);
     }
 
-    public CompletableFuture<Optional<Product>> createProductByBarcode(String barcode) {
+    public Optional<Product> createProductByBarcode(String barcode) {
         Optional<Product> existing = productRepository.findByBarcode(barcode);
         if (existing.isPresent()) {
-            return CompletableFuture.completedFuture(existing);
+            return existing;
         }
 
-        return OpenFoodFactsAPI.getProductByBarcodeMappedAsync(barcode)
-                .thenApply(product -> {
-                    if (product != null) {
-                        productRepository.save(product);
-                        return Optional.of(product);
-                    } else {
-                        return Optional.empty();
-                    }
-                });
+        Product product = OpenFoodFactsAPI.getProductByBarcodeMapped(barcode);
+
+        if (product != null) {
+            productRepository.save(product);
+            return Optional.of(product);
+        } else {
+            return Optional.empty();
+        }
     }
+
 
     public Product createProduct(Product product) {
         return productRepository.save(product);

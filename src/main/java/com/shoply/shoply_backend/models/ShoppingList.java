@@ -10,6 +10,7 @@ public class ShoppingList {
 
     @Id
     private String shoppingListId;
+    private String name;
     private String userId;
     private Instant createdAt;
     private boolean active;
@@ -18,8 +19,9 @@ public class ShoppingList {
     public ShoppingList() {
     }
 
-    public ShoppingList(String shoppingListId, String userId, Instant createdAt, boolean active, boolean generatedByAI) {
+    public ShoppingList(String shoppingListId, String name, String userId, Instant createdAt, boolean active, boolean generatedByAI) {
         this.shoppingListId = shoppingListId;
+        this.name = name;
         this.userId = userId;
         this.createdAt = createdAt;
         this.active = active;
@@ -33,6 +35,14 @@ public class ShoppingList {
 
     public void setShoppingListId(String shoppingListId) {
         this.shoppingListId = shoppingListId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getUserId() {
@@ -79,13 +89,14 @@ public class ShoppingList {
         return active == that.active &&
                 generatedByAI == that.generatedByAI &&
                 Objects.equals(shoppingListId, that.shoppingListId) &&
+                Objects.equals(name, that.name) &&
                 Objects.equals(userId, that.userId) &&
                 Objects.equals(createdAt, that.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(shoppingListId, userId, createdAt, active, generatedByAI);
+        return Objects.hash(shoppingListId, name, userId, createdAt, active, generatedByAI);
     }
 
     @Override
@@ -93,6 +104,7 @@ public class ShoppingList {
         StringBuilder sb = new StringBuilder();
         sb.append("ShoppingList{")
                 .append("shoppingListId='").append(shoppingListId).append('\'')
+                .append(", name='").append(name).append('\'')
                 .append(", userId='").append(userId).append('\'')
                 .append(", createdAt=").append(createdAt)
                 .append(", active=").append(active)
@@ -103,15 +115,12 @@ public class ShoppingList {
 
     // Factory Pattern
     public static class ShoppingListFactory {
-        public static ShoppingList createUserGeneratedList(String userId, boolean active) {
-            return new ShoppingList(null, userId, Instant.now(), active, false);
+        public static ShoppingList createUserGeneratedList(String name, String userId, boolean active) {
+            return new ShoppingList(null, name, userId, Instant.now(), active, false);
         }
 
-        public static ShoppingList createAIGeneratedList(String userId, boolean active) {
-            return new ShoppingList(null, userId, Instant.now(), active, true);
+        public static ShoppingList createAIGeneratedList(String name, String userId, boolean active) {
+            return new ShoppingList(null, name, userId, Instant.now(), active, true);
         }
     }
 }
-
-
-

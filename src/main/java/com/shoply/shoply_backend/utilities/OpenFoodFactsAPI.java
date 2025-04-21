@@ -3,6 +3,8 @@ package com.shoply.shoply_backend.utilities;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shoply.shoply_backend.models.Product;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -14,13 +16,17 @@ import java.util.stream.StreamSupport;
 
 public class OpenFoodFactsAPI {
 
+    private static final Logger logger = LoggerFactory.getLogger(OpenFoodFactsAPI.class);
     private static final String BASE_URL = "https://world.openfoodfacts.org/api/v2/product/";
     private static final HttpClient httpClient = HttpClient.newHttpClient();
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public static Product getProductByBarcodeMapped(String barcode) {
         try {
+            logger.info("Fetching product with barcode: {}", barcode);
             String url = BASE_URL + barcode + ".json";
+            logger.debug("Request URL: {}", url);
+
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
                     .header("Accept", "application/json")
@@ -29,14 +35,17 @@ public class OpenFoodFactsAPI {
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
+            logger.debug("HTTP Status: {}", response.statusCode());
+
             if (response.statusCode() != 200) {
-                System.err.println("❌ Failed to fetch product. HTTP Status: " + response.statusCode());
+                logger.warn("Failed to fetch product. HTTP Status: {}", response.statusCode());
                 return null;
             }
 
+            logger.info("Product data fetched successfully. Starting JSON parsing...");
             return parseProductFromJson(response.body());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception occurred during product fetch:", e);
             return null;
         }
     }
@@ -46,7 +55,12 @@ public class OpenFoodFactsAPI {
             JsonNode root = mapper.readTree(json);
             JsonNode productNode = root.get("product");
 
-            if (productNode == null) return null;
+            if (productNode == null) {
+                logger.warn("No 'product' node found in JSON.");
+                return null;
+            }
+
+            logger.debug("Extracting product fields from JSON...");
 
             String barcode = root.path("code").asText(null);
             String name = productNode.path("product_name").asText(null);
@@ -70,6 +84,7 @@ public class OpenFoodFactsAPI {
                     .collect(Collectors.toList())
                     : null;
 
+            logger.info("Product parsed successfully: {}", name);
             return Product.ProductFactory.create(
                     barcode, name, brand, brandOwner, category,
                     ingredients, nutriScore, energyKcal, salt, sugar,
@@ -78,7 +93,7 @@ public class OpenFoodFactsAPI {
             );
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception occurred while parsing product JSON:", e);
             return null;
         }
     }
@@ -102,3 +117,4 @@ public class OpenFoodFactsAPI {
         }
     }
 }
+

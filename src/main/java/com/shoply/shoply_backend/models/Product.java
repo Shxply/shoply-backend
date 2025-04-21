@@ -1,9 +1,7 @@
 package com.shoply.shoply_backend.models;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 import java.util.Objects;
@@ -13,9 +11,8 @@ public class Product {
 
     @Id
     private String productId;
-    @Indexed(unique = true)
-    @Field("barcode")
     private String barcode;
+    private Double price;
     private String name;
     private String brand;
     private String brandOwner;
@@ -36,12 +33,13 @@ public class Product {
 
     public Product() {}
 
-    public Product(String barcode, String name, String brand, String brandOwner,
+    public Product(String barcode, Double price, String name, String brand, String brandOwner,
                    String category, String ingredients, String nutriScore,
                    Double energyKcal, Double salt, Double sugar,
                    String imageUrl, String imageFrontUrl, String imageIngredientsUrl, String imageNutritionUrl,
                    List<String> ingredientTags) {
         this.barcode = barcode;
+        this.price = price;
         this.name = name;
         this.brand = brand;
         this.brandOwner = brandOwner;
@@ -64,6 +62,10 @@ public class Product {
 
     public String getBarcode() {
         return barcode;
+    }
+
+    public Double getPrice() {
+        return price;
     }
 
     public String getName() {
@@ -106,6 +108,18 @@ public class Product {
         return imageUrl;
     }
 
+    public String getImageFrontUrl() {
+        return imageFrontUrl;
+    }
+
+    public String getImageIngredientsUrl() {
+        return imageIngredientsUrl;
+    }
+
+    public String getImageNutritionUrl() {
+        return imageNutritionUrl;
+    }
+
     public List<String> getIngredientTags() {
         return ingredientTags;
     }
@@ -116,6 +130,10 @@ public class Product {
 
     public void setBarcode(String barcode) {
         this.barcode = barcode;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
     public void setName(String name) {
@@ -158,31 +176,20 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public void setIngredientTags(List<String> ingredientTags) {
-        this.ingredientTags = ingredientTags;
-    }
-    public String getImageFrontUrl() {
-        return imageFrontUrl;
-    }
-
     public void setImageFrontUrl(String imageFrontUrl) {
         this.imageFrontUrl = imageFrontUrl;
-    }
-
-    public String getImageIngredientsUrl() {
-        return imageIngredientsUrl;
     }
 
     public void setImageIngredientsUrl(String imageIngredientsUrl) {
         this.imageIngredientsUrl = imageIngredientsUrl;
     }
 
-    public String getImageNutritionUrl() {
-        return imageNutritionUrl;
-    }
-
     public void setImageNutritionUrl(String imageNutritionUrl) {
         this.imageNutritionUrl = imageNutritionUrl;
+    }
+
+    public void setIngredientTags(List<String> ingredientTags) {
+        this.ingredientTags = ingredientTags;
     }
 
     @Override
@@ -202,6 +209,7 @@ public class Product {
         return "Product{" +
                 "productId='" + productId + '\'' +
                 ", barcode='" + barcode + '\'' +
+                ", price=" + price +
                 ", name='" + name + '\'' +
                 ", brand='" + brand + '\'' +
                 ", brandOwner='" + brandOwner + '\'' +
@@ -216,14 +224,13 @@ public class Product {
                 '}';
     }
 
-    // Updated Factory Class
     public static class ProductFactory {
         public static Product create(String barcode, String name, String brand, String brandOwner,
                                      String category, String ingredients, String nutriScore,
                                      Double energyKcal, Double salt, Double sugar,
                                      String imageUrl, String imageFrontUrl, String imageIngredientsUrl, String imageNutritionUrl,
                                      List<String> ingredientTags) {
-            return new Product(barcode, name, brand, brandOwner, category, ingredients, nutriScore,
+            return new Product(barcode, null, name, brand, brandOwner, category, ingredients, nutriScore,
                     energyKcal, salt, sugar, imageUrl, imageFrontUrl, imageIngredientsUrl, imageNutritionUrl, ingredientTags);
         }
     }

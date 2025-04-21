@@ -1,7 +1,9 @@
 package com.shoply.shoply_backend.models;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 import java.util.Objects;
@@ -11,6 +13,8 @@ public class Product {
 
     @Id
     private String productId;
+    @Indexed(unique = true)
+    @Field("barcode")
     private String barcode;
     private String name;
     private String brand;

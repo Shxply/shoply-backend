@@ -29,14 +29,51 @@ public class ChatGPTAPI {
 
     private static String generateComparisonPrompt(Product product1, Product product2) {
         return String.format(
-                "Compare the following two products based on their brand, category, and other details:\n" +
-                        "Product 1:\nName: %s\nBrand: %s\nCategory: %s\nBarcode: %s\n\n" +
-                        "Product 2:\nName: %s\nBrand: %s\nCategory: %s\nBarcode: %s\n\n" +
-                        "Provide a detailed comparison, highlighting similarities and differences.",
-                product1.getName(), product1.getBrand(), product1.getCategory(), product1.getBarcode(),
-                product2.getName(), product2.getBrand(), product2.getCategory(), product2.getBarcode()
+                "Compare the following two products in detail. Include analysis of nutrition, ingredients, brand, and other product characteristics.\n\n" +
+
+                        "**Product 1**:\n" +
+                        "- Name: %s\n" +
+                        "- Brand: %s\n" +
+                        "- Brand Owner: %s\n" +
+                        "- Category: %s\n" +
+                        "- Barcode: %s\n" +
+                        "- Ingredients: %s\n" +
+                        "- NutriScore: %s\n" +
+                        "- Energy (kcal): %.2f\n" +
+                        "- Salt (g): %.2f\n" +
+                        "- Sugar (g): %.2f\n" +
+                        "- Ingredient Tags: %s\n\n" +
+
+                        "**Product 2**:\n" +
+                        "- Name: %s\n" +
+                        "- Brand: %s\n" +
+                        "- Brand Owner: %s\n" +
+                        "- Category: %s\n" +
+                        "- Barcode: %s\n" +
+                        "- Ingredients: %s\n" +
+                        "- NutriScore: %s\n" +
+                        "- Energy (kcal): %.2f\n" +
+                        "- Salt (g): %.2f\n" +
+                        "- Sugar (g): %.2f\n" +
+                        "- Ingredient Tags: %s\n\n" +
+
+                        "Give a clear, structured comparison and state which product may be healthier or better overall.",
+                product1.getName(), product1.getBrand(), product1.getBrandOwner(), product1.getCategory(), product1.getBarcode(),
+                product1.getIngredients(), product1.getNutriScore(),
+                product1.getEnergyKcal() != null ? product1.getEnergyKcal() : 0.0,
+                product1.getSalt() != null ? product1.getSalt() : 0.0,
+                product1.getSugar() != null ? product1.getSugar() : 0.0,
+                product1.getIngredientTags() != null ? String.join(", ", product1.getIngredientTags()) : "N/A",
+
+                product2.getName(), product2.getBrand(), product2.getBrandOwner(), product2.getCategory(), product2.getBarcode(),
+                product2.getIngredients(), product2.getNutriScore(),
+                product2.getEnergyKcal() != null ? product2.getEnergyKcal() : 0.0,
+                product2.getSalt() != null ? product2.getSalt() : 0.0,
+                product2.getSugar() != null ? product2.getSugar() : 0.0,
+                product2.getIngredientTags() != null ? String.join(", ", product2.getIngredientTags()) : "N/A"
         );
     }
+
 
     private static String makeChatGPTRequest(String apiKey, String systemPrompt, String userPrompt) {
         RestTemplate restTemplate = new RestTemplate();

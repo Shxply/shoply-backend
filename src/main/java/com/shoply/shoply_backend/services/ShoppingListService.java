@@ -54,7 +54,9 @@ public class ShoppingListService {
                 });
     }
 
-
+    public List<ShoppingListItem> getItemsForShoppingList(String shoppingListId) {
+        return shoppingListItemRepository.findByShoppingListId(shoppingListId);
+    }
 }
 
 

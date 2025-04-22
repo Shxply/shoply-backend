@@ -33,6 +33,11 @@ public class ShoppingListController {
         return shoppingListService.addItemToShoppingList(shoppingListId, itemRequest.getProductId(), itemRequest.getQuantity(), itemRequest.getPreferredStoreId());
     }
 
+    @GetMapping("/{shoppingListId}/items")
+    public List<ShoppingListItem> getItemsForShoppingList(@PathVariable String shoppingListId) {
+        return shoppingListService.getItemsForShoppingList(shoppingListId);
+    }
+
     @DeleteMapping("/{id}")
     public void deleteShoppingList(@PathVariable String id) {
         shoppingListService.deleteShoppingList(id);

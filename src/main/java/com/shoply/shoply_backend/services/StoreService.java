@@ -5,6 +5,7 @@ import com.shoply.shoply_backend.repositories.StoreRepository;
 import com.shoply.shoply_backend.utilities.GooglePlacesAPI;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.geo.Point;
+import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -59,7 +60,7 @@ public class StoreService {
     }
 
     public List<Store> getStoresNearUser200M(double latitude, double longitude) {
-        double radiusKm = 10.0;
+        double radiusKm = 15.0;
         double radiusInMeters = radiusKm * 1000;
 
         System.out.println("📍 Searching for stores near:");
@@ -84,5 +85,4 @@ public class StoreService {
 
         return nearbyStores;
     }
-
 }

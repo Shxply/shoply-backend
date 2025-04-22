@@ -35,7 +35,7 @@ public class StoreService {
     }
 
     public void getStoresNearUser25KM(double latitude, double longitude) {
-        String coordinateString = latitude + ", " + longitude;
+        String coordinateString = latitude + "," + longitude;
         List<Store> nearbyStores = GooglePlacesAPI.fetchNearbyStores(coordinateString, 25000);
 
         for (Store store : nearbyStores) {

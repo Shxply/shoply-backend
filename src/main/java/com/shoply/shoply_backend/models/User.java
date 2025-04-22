@@ -150,7 +150,6 @@ public class User {
         return sb.toString();
     }
 
-
     // Factory Pattern
     public static class UserFactory {
         public static User createOAuthUser(String oauthProvider, String oauthId, String name, String email, String profilePicture, Set<String> roles) {

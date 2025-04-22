@@ -21,9 +21,10 @@ public class ShoppingListController {
     }
 
     @PostMapping
-    public ShoppingList createShoppingList(@RequestBody ShoppingList shoppingList) {
-        return shoppingListService.createShoppingList(shoppingList);
+    public ShoppingList createShoppingList(@RequestBody String name, String userId) {
+        return shoppingListService.createShoppingList(name, userId);
     }
+
 
     @DeleteMapping("/{id}")
     public void deleteShoppingList(@PathVariable String id) {

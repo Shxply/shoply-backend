@@ -18,7 +18,8 @@ public class ShoppingListService {
         return shoppingListRepository.findByUserId(userId);
     }
 
-    public ShoppingList createShoppingList(ShoppingList shoppingList) {
+    public ShoppingList createShoppingList(String name, String userId) {
+        ShoppingList shoppingList = ShoppingList.ShoppingListFactory.createUserGeneratedList(name, userId, true);
         return shoppingListRepository.save(shoppingList);
     }
 

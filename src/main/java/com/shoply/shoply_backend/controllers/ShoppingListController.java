@@ -1,5 +1,6 @@
 package com.shoply.shoply_backend.controllers;
 
+import com.shoply.shoply_backend.dto.ShoppingListRequest;
 import com.shoply.shoply_backend.models.ShoppingList;
 import com.shoply.shoply_backend.services.ShoppingListService;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +22,10 @@ public class ShoppingListController {
     }
 
     @PostMapping
-    public ShoppingList createShoppingList(@RequestBody String name, String userId) {
-        return shoppingListService.createShoppingList(name, userId);
+    public ShoppingList createShoppingList(@RequestBody ShoppingListRequest request) {
+        return shoppingListService.createShoppingList(request.getName(), request.getUserId());
     }
+
 
 
     @DeleteMapping("/{id}")

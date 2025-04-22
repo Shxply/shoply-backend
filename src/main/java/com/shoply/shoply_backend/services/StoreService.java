@@ -5,6 +5,7 @@ import com.shoply.shoply_backend.repositories.StoreRepository;
 import com.shoply.shoply_backend.utilities.GooglePlacesAPI;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.geo.Point;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -67,7 +68,7 @@ public class StoreService {
         System.out.println("📏 Radius (km): " + radiusKm);
         System.out.println("📐 Radius in radians: " + radiusInRadians);
 
-        Point userLocation = new Point(longitude, latitude);
+        GeoJsonPoint userLocation = new GeoJsonPoint(longitude, latitude);
         Criteria geoCriteria = Criteria.where("location")
                 .nearSphere(userLocation)
                 .maxDistance(radiusInRadians);

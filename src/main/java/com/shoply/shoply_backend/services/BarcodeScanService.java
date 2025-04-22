@@ -31,6 +31,17 @@ public class BarcodeScanService {
         return barcodeScanRepository.save(barcodeScan);
     }
 
+    public BarcodeScan createScanAndUpdatePriceIfLower(BarcodeScan scan) {
+        BarcodeScan savedScan = barcodeScanRepository.save(scan);
+        Optional<BarcodeScan> existing = barcodeScanRepository.findTopByProductIdAndStoreIdOrderByScannedPriceAsc(scan.getProductId(), scan.getStoreId());
+        if (existing.isPresent() && existing.get().getScannedPrice() < scan.getScannedPrice()) {
+            return savedScan;
+        }
+        existing.ifPresent(e -> barcodeScanRepository.deleteById(e.getScanId()));
+        return savedScan;
+    }
+
+
     public void deleteScan(String id) {
         barcodeScanRepository.deleteById(id);
     }

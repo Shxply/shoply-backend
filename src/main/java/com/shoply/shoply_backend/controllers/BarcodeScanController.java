@@ -36,6 +36,12 @@ public class BarcodeScanController {
         return barcodeScanService.createScan(barcodeScan);
     }
 
+    @PostMapping("/track")
+    public BarcodeScan trackScan(@RequestBody BarcodeScan barcodeScan) {
+        return barcodeScanService.createScanAndUpdatePriceIfLower(barcodeScan);
+    }
+
+
     @DeleteMapping("/{id}")
     public void deleteScan(@PathVariable String id) {
         barcodeScanService.deleteScan(id);

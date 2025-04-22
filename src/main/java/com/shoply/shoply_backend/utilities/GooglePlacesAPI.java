@@ -12,7 +12,7 @@ import java.util.List;
 public class GooglePlacesAPI {
 
     private static final String API_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
-    private static final String API_KEY = "AIzaSyDmcL7_-huBbJzehaQfmEeL0MHOSVKBK2g";
+    private static final String API_KEY = System.getenv("GOOGLE_PLACES_API_KEY");
 
     private GooglePlacesAPI() {
         // Prevent instantiation

@@ -52,10 +52,8 @@ public class StoreService {
         }
     }
 
-
-
     public List<Store> getStoresNearUser200M (double latitude, double longitude) {
-        double radius = 0.2;
+        double radius = 10.0;
         Point userLocation = new Point(longitude, latitude);
         Criteria geoCriteria = Criteria.where("location").nearSphere(userLocation).maxDistance(radius / 6371.0);
         Query query = new Query(geoCriteria);

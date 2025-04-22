@@ -34,17 +34,25 @@ public class StoreService {
         storeRepository.deleteById(storeId);
     }
 
-    public void getStoresNearUser25KM (double latitude, double longitude) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(latitude).append(", ").append(longitude);
-        List<Store> stores = GooglePlacesAPI.fetchNearbyStores(sb.toString(), 25000);
-        for(Store store : stores) {
-            Store existingStore = storeRepository.findByName(store.getName());
-            if(existingStore == null) {
+    public void getStoresNearUser25KM(double latitude, double longitude) {
+        String coordinateString = latitude + ", " + longitude;
+        List<Store> nearbyStores = GooglePlacesAPI.fetchNearbyStores(coordinateString, 25000);
+
+        for (Store store : nearbyStores) {
+            List<Store> existingStoresWithSameName = storeRepository.findByName(store.getName());
+
+            boolean alreadyExists = existingStoresWithSameName.stream().anyMatch(existing ->
+                    existing.getLocation().getX() == store.getLocation().getX() &&
+                            existing.getLocation().getY() == store.getLocation().getY()
+            );
+
+            if (!alreadyExists) {
                 createStore(store);
             }
         }
     }
+
+
 
     public List<Store> getStoresNearUser200M (double latitude, double longitude) {
         double radius = 0.2;

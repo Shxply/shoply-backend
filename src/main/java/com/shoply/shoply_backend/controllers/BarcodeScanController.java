@@ -1,5 +1,6 @@
 package com.shoply.shoply_backend.controllers;
 
+import com.shoply.shoply_backend.dto.BarcodeScanRequest;
 import com.shoply.shoply_backend.models.BarcodeScan;
 import com.shoply.shoply_backend.services.BarcodeScanService;
 import org.springframework.web.bind.annotation.*;
@@ -37,14 +38,19 @@ public class BarcodeScanController {
     }
 
     @PostMapping("/track")
-    public BarcodeScan trackScan(@RequestBody BarcodeScan barcodeScan) {
-        return barcodeScanService.createScanAndUpdatePriceIfLower(barcodeScan);
+    public BarcodeScan trackScan(@RequestBody BarcodeScanRequest request) {
+        return barcodeScanService.createScanAndUpdateMostRecent(
+                request.getUserId(),
+                request.getStoreId(),
+                request.getProductId(),
+                request.getScannedPrice()
+        );
     }
-
 
     @DeleteMapping("/{id}")
     public void deleteScan(@PathVariable String id) {
         barcodeScanService.deleteScan(id);
     }
 }
+
 

@@ -52,13 +52,34 @@ public class StoreService {
         }
     }
 
-    public List<Store> getStoresNearUser200M (double latitude, double longitude) {
-        double radius = 10.0;
+    public List<Store> getStoresNearUser200M(double latitude, double longitude) {
+        double radiusKm = 10.0;
+        double radiusInRadians = radiusKm / 6371.0;
+
+        System.out.println("📍 Searching for stores near:");
+        System.out.println("   Latitude: " + latitude);
+        System.out.println("   Longitude: " + longitude);
+        System.out.println("📏 Radius (km): " + radiusKm);
+        System.out.println("📐 Radius in radians: " + radiusInRadians);
+
         Point userLocation = new Point(longitude, latitude);
-        Criteria geoCriteria = Criteria.where("location").nearSphere(userLocation).maxDistance(radius / 6371.0);
+        Criteria geoCriteria = Criteria.where("location")
+                .nearSphere(userLocation)
+                .maxDistance(radiusInRadians);
+
         Query query = new Query(geoCriteria);
-        return mongoTemplate.find(query, Store.class);
+        System.out.println("🔎 MongoDB Query: " + query);
+
+        List<Store> nearbyStores = mongoTemplate.find(query, Store.class);
+
+        System.out.println("✅ Stores found: " + nearbyStores.size());
+        for (Store store : nearbyStores) {
+            System.out.println("🏪 " + store.getName() + " @ " + store.getLocation());
+        }
+
+        return nearbyStores;
     }
+
 }
 
 

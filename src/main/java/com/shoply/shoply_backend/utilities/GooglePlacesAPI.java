@@ -37,7 +37,6 @@ public class GooglePlacesAPI {
 
         try {
             String jsonResponse = restTemplate.getForObject(url, String.class);
-            System.out.println("📥 Raw JSON Response:\n" + jsonResponse);
 
             JsonNode root = objectMapper.readTree(jsonResponse);
             String status = root.path("status").asText();

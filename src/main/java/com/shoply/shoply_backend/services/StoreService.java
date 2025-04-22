@@ -8,14 +8,16 @@ import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
 public class StoreService {
 
-    private StoreRepository storeRepository;
+    private static final double COORDINATE_TOLERANCE = 0.0001;
 
-    private MongoTemplate mongoTemplate;
+    private final StoreRepository storeRepository;
+    private final MongoTemplate mongoTemplate;
 
     public StoreService(StoreRepository storeRepository, MongoTemplate mongoTemplate) {
         this.storeRepository = storeRepository;
@@ -42,12 +44,15 @@ public class StoreService {
             List<Store> existingStoresWithSameName = storeRepository.findByName(store.getName());
 
             boolean alreadyExists = existingStoresWithSameName.stream().anyMatch(existing ->
-                    existing.getLocation().getX() == store.getLocation().getX() &&
-                            existing.getLocation().getY() == store.getLocation().getY()
+                    Math.abs(existing.getLocation().getX() - store.getLocation().getX()) < COORDINATE_TOLERANCE &&
+                            Math.abs(existing.getLocation().getY() - store.getLocation().getY()) < COORDINATE_TOLERANCE
             );
 
             if (!alreadyExists) {
+                System.out.println("➕ Inserting store: " + store.getName() + " @ " + store.getLocation());
                 createStore(store);
+            } else {
+                System.out.println("⚠️ Store already exists (fuzzy match): " + store.getName() + " @ " + store.getLocation());
             }
         }
     }
@@ -79,8 +84,4 @@ public class StoreService {
 
         return nearbyStores;
     }
-
 }
-
-
-

@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface BarcodeScanRepository extends MongoRepository<BarcodeScan, String> {
     List<BarcodeScan> findByUserId(String userId);
 
-    Optional<BarcodeScan> findTopByProductIdAndStoreIdOrderByScannedPriceAsc(String productId, String storeId);
+    Optional<BarcodeScan> findTopByProductIdAndStoreIdOrderByScanTimestampDesc(String productId, String storeId);
+
 }

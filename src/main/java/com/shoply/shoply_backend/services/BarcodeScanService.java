@@ -1,8 +1,11 @@
 package com.shoply.shoply_backend.services;
 
 import com.shoply.shoply_backend.models.BarcodeScan;
+import com.shoply.shoply_backend.models.BarcodeScan.BarcodeScanFactory;
 import com.shoply.shoply_backend.repositories.BarcodeScanRepository;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,20 +34,15 @@ public class BarcodeScanService {
         return barcodeScanRepository.save(barcodeScan);
     }
 
-    public BarcodeScan createScanAndUpdatePriceIfLower(BarcodeScan scan) {
-        BarcodeScan savedScan = barcodeScanRepository.save(scan);
-        Optional<BarcodeScan> existing = barcodeScanRepository.findTopByProductIdAndStoreIdOrderByScannedPriceAsc(scan.getProductId(), scan.getStoreId());
-        if (existing.isPresent() && existing.get().getScannedPrice() < scan.getScannedPrice()) {
-            return savedScan;
-        }
+    public BarcodeScan createScanAndUpdateMostRecent(String userId, String storeId, String productId, double scannedPrice) {
+        Optional<BarcodeScan> existing = barcodeScanRepository.findTopByProductIdAndStoreIdOrderByScanTimestampDesc(productId, storeId);
         existing.ifPresent(e -> barcodeScanRepository.deleteById(e.getScanId()));
-        return savedScan;
+        BarcodeScan newScan = BarcodeScanFactory.create(userId, storeId, productId, scannedPrice);
+        return barcodeScanRepository.save(newScan);
     }
-
 
     public void deleteScan(String id) {
         barcodeScanRepository.deleteById(id);
     }
 }
-
 

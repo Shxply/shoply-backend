@@ -60,18 +60,17 @@ public class StoreService {
 
     public List<Store> getStoresNearUser200M(double latitude, double longitude) {
         double radiusKm = 10.0;
-        double radiusInRadians = radiusKm / 6371.0;
+        double radiusInMeters = radiusKm * 1000;
 
         System.out.println("📍 Searching for stores near:");
         System.out.println("   Latitude: " + latitude);
         System.out.println("   Longitude: " + longitude);
-        System.out.println("📏 Radius (km): " + radiusKm);
-        System.out.println("📐 Radius in radians: " + radiusInRadians);
+        System.out.println("📏 Radius (meters): " + radiusInMeters);
 
         GeoJsonPoint userLocation = new GeoJsonPoint(longitude, latitude);
         Criteria geoCriteria = Criteria.where("location")
                 .nearSphere(userLocation)
-                .maxDistance(radiusInRadians);
+                .maxDistance(radiusInMeters); // 👈 Use meters, not radians
 
         Query query = new Query(geoCriteria);
         System.out.println("🔎 MongoDB Query: " + query);
@@ -85,4 +84,5 @@ public class StoreService {
 
         return nearbyStores;
     }
+
 }

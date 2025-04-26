@@ -4,8 +4,6 @@ import com.shoply.shoply_backend.models.Store;
 import com.shoply.shoply_backend.repositories.StoreRepository;
 import com.shoply.shoply_backend.utilities.GooglePlacesAPI;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.geo.Point;
-import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;

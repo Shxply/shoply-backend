@@ -13,4 +13,5 @@ public interface BarcodeScanRepository extends MongoRepository<BarcodeScan, Stri
 
     Optional<BarcodeScan> findTopByProductIdAndStoreIdOrderByScanTimestampDesc(String productId, String storeId);
 
+    List<BarcodeScan> findByProductId(String productId);
 }

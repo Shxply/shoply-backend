@@ -44,5 +44,10 @@ public class BarcodeScanService {
     public void deleteScan(String id) {
         barcodeScanRepository.deleteById(id);
     }
+
+    public List<BarcodeScan> getScansByProductId(String productId) {
+        return barcodeScanRepository.findByProductId(productId);
+    }
+
 }
 

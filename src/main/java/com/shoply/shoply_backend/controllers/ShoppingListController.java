@@ -8,6 +8,7 @@ import com.shoply.shoply_backend.services.ShoppingListService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/shopping-lists")
@@ -29,7 +30,7 @@ public class ShoppingListController {
     }
 
     @PostMapping("/{shoppingListId}/items")
-    public ShoppingListItem addItemToShoppingList (@PathVariable String shoppingListId, @RequestBody ShoppingListItemRequest itemRequest) {
+    public ShoppingListItem addItemToShoppingList(@PathVariable String shoppingListId, @RequestBody ShoppingListItemRequest itemRequest) {
         return shoppingListService.addItemToShoppingList(shoppingListId, itemRequest.getProductId(), itemRequest.getQuantity(), itemRequest.getPreferredStoreId());
     }
 
@@ -42,5 +43,11 @@ public class ShoppingListController {
     public void deleteShoppingList(@PathVariable String id) {
         shoppingListService.deleteShoppingList(id);
     }
+
+    @GetMapping("/{shoppingListId}/optimized-items")
+    public Map<String, List<ShoppingListItem>> getOptimizedShoppingListGroupedByStore(@PathVariable String shoppingListId) {
+        return shoppingListService.getOptimizedShoppingListGroupedByStore(shoppingListId);
+    }
 }
+
 

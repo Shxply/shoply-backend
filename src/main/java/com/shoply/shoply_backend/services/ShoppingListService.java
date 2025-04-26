@@ -85,7 +85,7 @@ public class ShoppingListService {
                 item.setPreferredStoreId(storeId);
 
                 productRepository.findById(item.getProductId()).ifPresent(product -> {
-                    product.setPrice(lowestScan.getScannedPrice()); // <- attach lowest scanned price to Product
+                    product.setPrice(lowestScan.getScannedPrice());
                     item.setProduct(product);
                 });
 

@@ -29,18 +29,19 @@ public class GooglePlacesAPI {
                 .queryParam("key", API_KEY)
                 .toUriString();
 
-        System.out.println("🌐 Requesting Google Places API:");
-        System.out.println("🔗 URL: " + url);
-        System.out.println("🔑 API_KEY is " + (API_KEY == null ? "❌ MISSING" : "✅ PRESENT"));
+        System.out.println("\uD83C\uDF10 Requesting Google Places API:");
+        System.out.println("\uD83D\uDD17 URL: " + url);
+        System.out.println("\uD83D\uDD11 API_KEY is " + (API_KEY == null ? "❌ MISSING" : "✅ PRESENT"));
 
         List<Store> stores = new ArrayList<>();
 
         try {
             String jsonResponse = restTemplate.getForObject(url, String.class);
+            System.out.println("Raw JSON Response: " + jsonResponse);
 
             JsonNode root = objectMapper.readTree(jsonResponse);
             String status = root.path("status").asText();
-            System.out.println("📊 API Response Status: " + status);
+            System.out.println("\uD83D\uDCCA API Response Status: " + status);
 
             if (!status.equals("OK")) {
                 System.out.println("⚠️ Warning: Google API returned non-OK status.");
@@ -51,11 +52,50 @@ public class GooglePlacesAPI {
 
             for (JsonNode place : results) {
                 String name = place.path("name").asText();
+                String businessStatus = place.path("business_status").asText();
+
+                List<String> types = new ArrayList<>();
+                for (JsonNode typeNode : place.path("types")) {
+                    types.add(typeNode.asText());
+                }
+
+                String vicinity = place.path("vicinity").asText();
+                Double rating = place.has("rating") ? place.path("rating").asDouble() : null;
+                Integer userRatingsTotal = place.has("user_ratings_total") ? place.path("user_ratings_total").asInt() : null;
+                Integer priceLevel = place.has("price_level") ? place.path("price_level").asInt() : null;
+                String placeId = place.path("place_id").asText();
+                Boolean openNow = place.path("opening_hours").has("open_now") ? place.path("opening_hours").path("open_now").asBoolean() : null;
+
                 double lat = place.path("geometry").path("location").path("lat").asDouble();
                 double lng = place.path("geometry").path("location").path("lng").asDouble();
 
-                System.out.println("🏪 Found Store: " + name + " (" + lat + ", " + lng + ")");
-                stores.add(Store.StoreFactory.create(name, lat, lng));
+                String photoReference = null;
+                List<String> photoAttributions = new ArrayList<>();
+                if (place.has("photos") && place.path("photos").isArray() && place.path("photos").size() > 0) {
+                    JsonNode firstPhoto = place.path("photos").get(0);
+                    photoReference = firstPhoto.path("photo_reference").asText();
+                    for (JsonNode attribution : firstPhoto.path("html_attributions")) {
+                        photoAttributions.add(attribution.asText());
+                    }
+                }
+
+                System.out.println("\uD83C\uDFEA Found Store: " + name + " (" + lat + ", " + lng + ")");
+
+                stores.add(Store.StoreFactory.create(
+                        name,
+                        businessStatus,
+                        types,
+                        vicinity,
+                        rating,
+                        userRatingsTotal,
+                        priceLevel,
+                        placeId,
+                        photoReference,
+                        photoAttributions,
+                        lat,
+                        lng,
+                        openNow
+                ));
             }
 
         } catch (Exception e) {
@@ -68,7 +108,6 @@ public class GooglePlacesAPI {
     }
 
     public static void main(String[] args) {
-        // Use the coordinates from earlier
         String testLocation = "36.698958395999554,-121.8008024250207";
         double radiusInMeters = 25000;
 
@@ -84,6 +123,3 @@ public class GooglePlacesAPI {
         }
     }
 }
-
-
-

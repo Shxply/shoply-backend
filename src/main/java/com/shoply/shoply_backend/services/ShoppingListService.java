@@ -1,14 +1,15 @@
 package com.shoply.shoply_backend.services;
 
 import com.shoply.shoply_backend.models.BarcodeScan;
+import com.shoply.shoply_backend.models.Product;
 import com.shoply.shoply_backend.models.ShoppingList;
 import com.shoply.shoply_backend.models.ShoppingListItem;
-import com.shoply.shoply_backend.repositories.ShoppingListRepository;
+import com.shoply.shoply_backend.repositories.ProductRepository;
 import com.shoply.shoply_backend.repositories.ShoppingListItemRepository;
+import com.shoply.shoply_backend.repositories.ShoppingListRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class ShoppingListService {
@@ -16,15 +17,18 @@ public class ShoppingListService {
     private final ShoppingListRepository shoppingListRepository;
     private final ShoppingListItemRepository shoppingListItemRepository;
     private final BarcodeScanService barcodeScanService;
+    private final ProductRepository productRepository;
 
     public ShoppingListService(
             ShoppingListRepository shoppingListRepository,
             ShoppingListItemRepository shoppingListItemRepository,
-            BarcodeScanService barcodeScanService
+            BarcodeScanService barcodeScanService,
+            ProductRepository productRepository
     ) {
         this.shoppingListRepository = shoppingListRepository;
         this.shoppingListItemRepository = shoppingListItemRepository;
         this.barcodeScanService = barcodeScanService;
+        this.productRepository = productRepository;
     }
 
     public List<ShoppingList> getUserShoppingLists(String userId) {
@@ -63,7 +67,6 @@ public class ShoppingListService {
         return shoppingListItemRepository.findByShoppingListId(shoppingListId);
     }
 
-
     public Map<String, List<ShoppingListItem>> getOptimizedShoppingListGroupedByStore(String shoppingListId) {
         List<ShoppingListItem> items = getItemsForShoppingList(shoppingListId);
         Map<String, List<ShoppingListItem>> groupedByStore = new HashMap<>();
@@ -74,14 +77,15 @@ public class ShoppingListService {
                 continue; // Skip if no scan data available
             }
 
-            // Find scan with the lowest price
             BarcodeScan lowestScan = scans.stream()
                     .min(Comparator.comparingDouble(BarcodeScan::getScannedPrice))
                     .orElse(null);
 
             if (lowestScan != null) {
                 String storeId = lowestScan.getStoreId();
-                item.setPreferredStoreId(storeId); // Update item with selected store
+                item.setPreferredStoreId(storeId);
+
+                productRepository.findById(item.getProductId()).ifPresent(item::setProduct);
 
                 groupedByStore.computeIfAbsent(storeId, k -> new ArrayList<>()).add(item);
             }
@@ -89,7 +93,6 @@ public class ShoppingListService {
 
         return groupedByStore;
     }
-
 
     public List<List<ShoppingListItem>> getOptimizedShoppingListAsListOfLists(String shoppingListId) {
         Map<String, List<ShoppingListItem>> grouped = getOptimizedShoppingListGroupedByStore(shoppingListId);

@@ -1,8 +1,8 @@
 package com.shoply.shoply_backend.models;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.util.Objects;
 
 @Document(collection = "shopping_list_items")
@@ -14,6 +14,9 @@ public class ShoppingListItem {
     private String productId;
     private int quantity;
     private String preferredStoreId;
+
+    @Transient
+    private Product product;
 
     public ShoppingListItem() {
     }
@@ -67,6 +70,14 @@ public class ShoppingListItem {
         this.preferredStoreId = preferredStoreId;
     }
 
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -103,5 +114,6 @@ public class ShoppingListItem {
         }
     }
 }
+
 
 

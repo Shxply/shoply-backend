@@ -1,7 +1,6 @@
 package com.shoply.shoply_backend.services;
 
 import com.shoply.shoply_backend.models.BarcodeScan;
-import com.shoply.shoply_backend.models.Product;
 import com.shoply.shoply_backend.models.ShoppingList;
 import com.shoply.shoply_backend.models.ShoppingListItem;
 import com.shoply.shoply_backend.repositories.ProductRepository;
@@ -85,7 +84,10 @@ public class ShoppingListService {
                 String storeId = lowestScan.getStoreId();
                 item.setPreferredStoreId(storeId);
 
-                productRepository.findById(item.getProductId()).ifPresent(item::setProduct);
+                productRepository.findById(item.getProductId()).ifPresent(product -> {
+                    product.setPrice(lowestScan.getScannedPrice()); // <- attach lowest scanned price to Product
+                    item.setProduct(product);
+                });
 
                 groupedByStore.computeIfAbsent(storeId, k -> new ArrayList<>()).add(item);
             }
@@ -93,6 +95,7 @@ public class ShoppingListService {
 
         return groupedByStore;
     }
+
 
     public List<List<ShoppingListItem>> getOptimizedShoppingListAsListOfLists(String shoppingListId) {
         Map<String, List<ShoppingListItem>> grouped = getOptimizedShoppingListGroupedByStore(shoppingListId);
